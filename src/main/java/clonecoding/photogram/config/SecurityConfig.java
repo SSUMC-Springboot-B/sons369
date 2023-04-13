@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 @EnableWebSecurity // 해당 파일로 시큐리티를 활성화
-@Configuration(proxyBeanMethods = false) // IoC에 등록
+@Configuration // IoC에 등록
 @ConditionalOnDefaultWebSecurity
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityConfig {
@@ -23,10 +23,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable();
         http.authorizeHttpRequests()
-                .antMatchers("/","/user/**", "/image/**", "/subscribe/**", "/comment/**").authenticated()
+                .antMatchers("/","/user/**", "/image/**", "/subscribe/**", "/comment/**, /auth/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .formLogin()
+                .formLogin().permitAll()
                 .loginPage("/auth/signin")
                 .defaultSuccessUrl("/");
 
