@@ -6,8 +6,14 @@ import clonecoding.photogram.web.dto.auth.SignupDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor // final 붙은 맴버변수의 생성자를 주입해줌(DI)
 @Controller
@@ -27,7 +33,18 @@ public class AuthController {
     }
 
     @PostMapping("/auth/signup")
-    public String signup(SignupDto signupDto){
+    public String signup(@Valid SignupDto signupDto, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            Map<String, String> errorMap = new HashMap<>();
+
+            for(FieldError error : bindingResult.getFieldErrors()){
+                errorMap.put(error.getField(), error.getDefaultMessage());
+                System.out.println(error.getDefaultMessage());
+            }
+
+        }
+
         User user = signupDto.toEntity();
         authService.join(user);
         return "auth/signin";
