@@ -1,8 +1,11 @@
 package clonecoding.photogram.handler;
 
+import clonecoding.photogram.handler.ex.CustomApiException;
 import clonecoding.photogram.handler.ex.CustomValidationException;
 import clonecoding.photogram.util.Script;
 import clonecoding.photogram.web.dto.CMRespDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,5 +28,13 @@ public class ControllerExceptionHandler {
         // 2. Ajax 통신 - CMRespDto
         // 3. Android통신 - CMRespDto
         return Script.back(e.getErrorMap().toString());
+    }
+
+    // CMRespDto 오브젝트 + HttpStatus 상태코드를 응답하는 핸들러
+    @ExceptionHandler(CustomApiException.class)
+    public ResponseEntity<?> apiException(CustomApiException e) {
+        return new ResponseEntity<>(
+                new CMRespDto<>(-1, e.getMessage(), e.getErrorMap()),
+                HttpStatus.BAD_REQUEST);
     }
 }
